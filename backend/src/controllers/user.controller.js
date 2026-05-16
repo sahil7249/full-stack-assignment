@@ -3,6 +3,7 @@ import AppError from "../utils/AppError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken'
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, address, role } = req?.body;
@@ -37,7 +38,6 @@ export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req?.body;
   const user = await prisma.user.findUnique({
     where: { email: email },
-    select: { password: true ,role : true},
   });
 
   if (user == null) {
@@ -48,7 +48,20 @@ export const loginUser = asyncHandler(async (req, res) => {
     throw new AppError("Invalid credentials", 500);
   }
 
-  return res.json(new ApiResponse(201, "User logged in successfully", user));
+  const token = jwt.sign({
+    id : user.id,
+    role : user.role
+  },
+  process.env.JWT_SECRET,
+  {
+    expiresIn : '7d'
+  })
+  const data = {
+    user: user,
+    token : token
+  }
+
+  return res.json(new ApiResponse(201, "User logged in successfully",data));
 });
 
 export const getAllUsers = asyncHandler(async (req, res) => {
