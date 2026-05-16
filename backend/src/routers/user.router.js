@@ -4,12 +4,12 @@ import { registerUser, deleteUserById, getAllUsers, getUserById, updateUser, log
 
 const userRouter = Router()
 
-userRouter.post('/user/register',registerUser)
-userRouter.post('/user/login',loginUser)
-userRouter.put('/user/:id',updateUser)
-userRouter.delete('/user/:id',deleteUserById)
-userRouter.get('/user/all',getAllUsers)
-userRouter.get('/user/:id',getUserById)
+userRouter.post('/register',registerUser)
+userRouter.post('/login',loginUser)
+userRouter.put('/:id',updateUser)
+userRouter.delete('/:id',deleteUserById)
+userRouter.get('/all',getAllUsers)
+userRouter.get('/:id',getUserById)
 
 
 export default userRouter;
