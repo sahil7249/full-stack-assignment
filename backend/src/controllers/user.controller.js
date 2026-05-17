@@ -56,6 +56,8 @@ export const loginUser = asyncHandler(async (req, res) => {
   {
     expiresIn : '7d'
   })
+  delete user.password
+  
   const data = {
     user: user,
     token : token

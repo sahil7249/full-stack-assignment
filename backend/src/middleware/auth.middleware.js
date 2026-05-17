@@ -20,3 +20,16 @@ export const authenticate = (req, res, next) => {
     next(new AppError("Invalid token", 401));
   }
 };
+
+export const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      throw new AppError("Unauthorzed", 401);
+    }
+
+    if (!roles.includes(req.user.role)) {
+      throw new AppError("Permission prohibited", 403);
+    }
+    next()
+  };
+};

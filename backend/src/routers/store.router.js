@@ -1,9 +1,14 @@
 import { Router } from "express";
-import { registerStore } from "../controllers/store.controller.js";
-import { authenticate } from "../middleware/auth.middleware.js";
+import { deleteAllStores, deleteStore, getAllStores,  getStores, registerStore, updateStore } from "../controllers/store.controller.js";
+import { authenticate, authorize } from "../middleware/auth.middleware.js";
 
 const storeRouter = Router()
 
-storeRouter.post('/register',authenticate,registerStore)
+storeRouter.post('/register',authenticate,authorize("ADMIN"),registerStore)
+storeRouter.get('/all',authenticate,getAllStores)
+storeRouter.get('/',authenticate,getStores)
+storeRouter.put('/:id',authenticate,updateStore)
+storeRouter.delete('/:id',authenticate,authorize("ADMIN"),deleteStore)
+storeRouter.delete('/',authenticate,authorize("ADMIN"),deleteAllStores)
 
 export default storeRouter;
