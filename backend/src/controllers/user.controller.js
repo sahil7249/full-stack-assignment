@@ -74,7 +74,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 export const getUserById = asyncHandler(async (req, res) => {
   const { id } = req?.params;
   const user = await prisma.user.findUnique({
-    where: { id: parseInt(id) },
+    where: { id: Number(id) },
     omit: { password: true },
   });
 
@@ -90,7 +90,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   const data = req?.body;
 
   const updatedUser = await prisma.user.update({
-    where: { id: parseInt(id) },
+    where: { id: Number(id) },
     data: data,
     omit: { password: true },
   });
@@ -107,11 +107,11 @@ export const updateUser = asyncHandler(async (req, res) => {
 export const deleteUserById = asyncHandler(async (req, res) => {
   const { id } = req?.params;
   const isUserExists = await prisma.user.findUnique({
-    where: { id: parseInt(id) },
+    where: { id: Number(id) },
   });
 
   const isAdmin = await prisma.user.findUnique({
-    where: { id: parseInt(id) },
+    where: { id: Number(id) },
     select: { role: true },
   });
 
@@ -124,7 +124,7 @@ export const deleteUserById = asyncHandler(async (req, res) => {
   }
 
   const deleteUser = await prisma.user.delete({
-    where: { id: parseInt(id) },
+    where: { id: Number(id) },
   });
   if (!deleteUser) {
     return res.status(400).json({ message: "Failed to delete user." });
@@ -138,7 +138,7 @@ export const deleteAllUser = asyncHandler(async (req, res) => {
   const isAdmin =
     "ADMIN" ==
     prisma.user.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: Number(id) },
       select: { role: true },
     });
   if (!isAdmin) {
