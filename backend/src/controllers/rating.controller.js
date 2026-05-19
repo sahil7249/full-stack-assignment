@@ -59,8 +59,8 @@ const getStats = async (storeId) => {
         where : {
             storeId : storeId
         },
-        _avg : true,
-        _count : true
+        _avg : { value : true },
+        _count : { value : true }
     })
     return stats
 }
