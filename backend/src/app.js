@@ -6,6 +6,7 @@ import storeRouter from './routers/store.router.js'
 import ratingRouter from './routers/rating.router.js'
 import authRouter  from './routers/auth.router.js'
 import cors from 'cors'
+import adminRouter from './routers/admin.router.js'
 
 env.config( { path :'.env'})
 
@@ -23,6 +24,7 @@ app.use('/api/user',userRouter)
 app.use('/api/stores',storeRouter)
 app.use('/api/rating',ratingRouter)
 app.use('/api/auth',authRouter)
+app.use('/api/admin',adminRouter)
 
 app.use(errorMiddleware)
 
