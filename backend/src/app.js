@@ -4,6 +4,7 @@ import userRouter  from './routers/user.router.js'
 import errorMiddleware from './middleware/error.middleware.js'
 import storeRouter from './routers/store.router.js'
 import ratingRouter from './routers/rating.router.js'
+import authRouter  from './routers/auth.router.js'
 
 env.config( { path :'.env'})
 
@@ -14,9 +15,10 @@ app.use(express.json())
 app.use('/api/user',userRouter)
 app.use('/api/store',storeRouter)
 app.use('/api/rating',ratingRouter)
+app.use('/api/auth',authRouter)
 
 app.use(errorMiddleware)
 
 app.listen(PORT,() => {
-    console.log("App is running on the link : http://localhost:8080/")
+    console.log(`App is running on the link : http://localhost:${PORT}/`)
 })
