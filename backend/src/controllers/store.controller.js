@@ -59,8 +59,37 @@ export const getStores = asyncHandler(async (req, res) => {
     where.ownerId = Number(ownerId);
   }
 
-  const stores = await prisma.store.findMany({ where });
-  return res.json(new ApiResponse(200, "Stores fetched successfully", stores));
+  // const stores = await prisma.store.findMany({ where });
+  // return res.json(new ApiResponse(200, "Stores fetched successfully", stores));
+
+  const stores = await prisma.store.findMany({
+    where,
+    include: {
+      ratings: {
+        select: { value: true },
+      },
+    },
+  });
+
+  // ✅ Calculate averageRating for each store
+  const storesWithRating = stores.map((store) => {
+    const totalRatings = store.ratings.length;
+    const averageRating =
+      totalRatings > 0
+        ? store.ratings.reduce((sum, r) => sum + r.value, 0) / totalRatings
+        : 0;
+
+    return {
+      ...store,
+      averageRating: parseFloat(averageRating.toFixed(1)),
+      totalRatings,
+      ratings: undefined,
+    };
+  });
+
+  return res.json(
+    new ApiResponse(200, "Stores fetched successfully", storesWithRating),
+  );
 });
 
 export const deleteStore = asyncHandler(async (req, res) => {
@@ -68,25 +97,29 @@ export const deleteStore = asyncHandler(async (req, res) => {
 
   const deleteStore = await prisma.store.delete({ where: { id: Number(id) } });
 
-  return res.json(new ApiResponse(201, "Store deleted successfully"));
+  return res.json(
+    new ApiResponse(200, "Store deleted successfully", deleteStore),
+  );
 });
 
 export const updateStore = asyncHandler(async (req, res) => {
   const { id } = req?.params;
-  const data = req?.body;
+  const { name, email, address } = req?.body;
 
   const updatedStore = await prisma.store.update({
     where: { id: Number(id) },
-    data: data
+    data: { name, email, address },
   });
 
-  return res.json(new ApiResponse(201, "Store updated successfully",updatedStore));
+  return res.json(
+    new ApiResponse(200, "Store updated successfully", updatedStore),
+  );
 });
 
 export const deleteAllStores = asyncHandler(async (req, res) => {
-
   const deleteStores = await prisma.store.deleteMany();
 
-  return res.json(new ApiResponse(201, "Store updated successfully",deleteStores));
+  return res.json(
+    new ApiResponse(200, "Store updated successfully", deleteStores),
+  );
 });
-
