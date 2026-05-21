@@ -63,5 +63,5 @@ export const register = asyncHandler(async (req, res) => {
     },
     omit: { password: true },
   });
-  res.status(201).json(new ApiResponse(201, "User created successfully", user));
+  res.status(200).json(new ApiResponse(200, "User created successfully", user));
 });

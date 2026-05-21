@@ -2,21 +2,56 @@ import prisma from "../config/prisma.config.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-export const getStats = asyncHandler(async(req,res) => {
-    const totalUsers = await prisma.user.count()
-    const totalRatings = await prisma.rating.count()
-    const totalStores = await prisma.store.count()
+export const getStats = asyncHandler(async (req, res) => {
+  const totalUsers = await prisma.user.count();
+  const totalRatings = await prisma.rating.count();
+  const totalStores = await prisma.store.count();
 
-    return res.json(
-        new ApiResponse(200,"Stats fetched successfully",{ totalUsers,totalRatings,totalStores})
-    )
-})
+  return res.json(
+    new ApiResponse(200, "Stats fetched successfully", {
+      totalUsers,
+      totalRatings,
+      totalStores,
+    }),
+  );
+});
+
+export const getUsers = asyncHandler(async (req, res) => {
+  const { name, email, address, role } = req?.query;
+  const where = {};
+
+  if (name) {
+    where.name = {
+      contains: name,
+    };
+  }
+
+  if (address) {
+    where.address = {
+      contains: address,
+    };
+  }
+
+  if (email) {
+    where.email = {
+      contains: email,
+    };
+  }
+  if (role) {
+    where.role = role
+  }
+
+
+  const users = await prisma.user.findMany({
+    where,
+  });
+
+  return res.json(new ApiResponse(200, "Users fetched successfully", users));
+});
 
 export const getAllUsers = asyncHandler(async (req, res) => {
   const users = await prisma.user.findMany({ omit: { password: true } });
-  return res.json(
-    new ApiResponse(200,"Users fetched successfully",users)
-  );
+  return res.json(new ApiResponse(200, "Users fetched successfully", users));
 });
 
 export const getUserById = asyncHandler(async (req, res) => {
@@ -42,7 +77,6 @@ export const registerStore = asyncHandler(async (req, res) => {
     throw new AppError("User not found", 404);
   }
 
-
   const store = await prisma.store.create({
     data: {
       name,
@@ -54,7 +88,6 @@ export const registerStore = asyncHandler(async (req, res) => {
 
   return res.json(new ApiResponse(201, "Store registered successfully", store));
 });
-
 
 export const getStores = asyncHandler(async (req, res) => {
   const { id, name, address, ownerId } = req?.query;
@@ -80,7 +113,6 @@ export const getStores = asyncHandler(async (req, res) => {
   if (ownerId) {
     where.ownerId = Number(ownerId);
   }
-
 
   const stores = await prisma.store.findMany({
     where,
