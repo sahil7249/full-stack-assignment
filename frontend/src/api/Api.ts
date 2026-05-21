@@ -7,11 +7,18 @@ import {
 
 const BASE_URL = "http://localhost:8080/api";
 
+interface ApiResponse<T> {
+  statusCode: number;
+  message: string;
+  data: T;
+}
+
 const getHeaders = (): HeadersInit => {
   const token = localStorage.getItem("token");
+
   return {
     "Content-Type": "application/json",
-    ...(token ? { Autherization: `Bearer ${token}` } : {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 };
 
@@ -21,12 +28,14 @@ const request = async <T>(path: string, options?: RequestInit): Promise<T> => {
     headers: { ...getHeaders(), ...options?.headers },
   });
 
+  const json = await res.json().catch(() => ({ message: "request failed" }));
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: "Request Failed " }));
-    throw new Error(err.meesage || "Request failed");
+    // const err = await res.json().catch(() => ({ message: res['message'] ||"Request Failed " }));
+    throw new Error(json.message);
   }
 
-  return res.json();
+  return (json as ApiResponse<T>).data;
 };
 
 export const api = {
@@ -53,4 +62,32 @@ export const api = {
         body: JSON.stringify(data),
       }),
   },
+  stores: {
+    getAll: (params?: { name?: string; address?: string }) => {
+      const queryParams: Record<string, string> = {};
+      if (params?.name) queryParams.name = params.name;
+      if (params?.address) queryParams.address = params.address;
+      const qs = new URLSearchParams(params as any).toString();
+      return request<Store & { userRating?: number }[]>(
+        `/stores${qs ? `?${qs}` : ""}`,
+      );
+    },
+    getById: (id: string) => request<Store>(`/stores/${id}`),
+  },
+  admin : {
+    getStats : () => request<AdminStats>('/admin/stats'),
+    getUsers : (params?: { name?:string; email?:string; address?:string; role?:string}) => {
+      const qs = new URLSearchParams(params as any).toString()
+      return request<User[]>(`/admin/users${qs ? `?${qs}` : ''}`);
+    },
+    createUser: (data : Omit<User ,'id'> & { password : string }) => 
+      request<User>('/admin/users/new',{ method:'POST' ,body: JSON.stringify(data)}),
+    getUserById: (id : string) => request<User>(`/admin/users/${id}`),
+    getStores : (params?: { name?: string; email?:string; address?: string}) => {
+      const qs = new URLSearchParams(params as any).toString()
+      return request<User[]>(`/admin/stores${qs ? `?${qs}` : ''}`);
+    },
+    createStore : (data: Omit<Store,'id' | 'averageRating' | 'totalRatings'>) => 
+      request<Store>('admin/stores',{ method:'POST',body:JSON.stringify(data) })
+  }
 };

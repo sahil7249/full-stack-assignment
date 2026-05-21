@@ -6,6 +6,7 @@ export interface User {
   email: string;
   password: string;
   role: Role;
+  address:string;
   storedId?: string;
 }
 
@@ -39,4 +40,9 @@ export interface AdminStats {
     totalUsers : number,
     totalStores :number,
     totalRatings:number
+}
+
+export interface SortConfig {
+  key: string;
+  direction: 'asc' | 'desc';
 }
