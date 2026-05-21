@@ -71,18 +71,12 @@ export const getUserById = asyncHandler(async (req, res) => {
 export const registerStore = asyncHandler(async (req, res) => {
   const { name, email, address, ownerId } = req?.body;
 
-  const owner = await prisma.user.findUnique({ where: { id: ownerId } });
-
-  if (!owner) {
-    throw new AppError("User not found", 404);
-  }
-
   const store = await prisma.store.create({
     data: {
       name,
       email,
       address,
-      ownerId: ownerId,
+      ownerId: Number(ownerId),
     },
   });
 

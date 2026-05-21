@@ -4,8 +4,7 @@ import AppError from "../utils/AppError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 export const rateStore = asyncHandler(async (req, res) => {
-  const { storeId } = req?.params;
-  const { value } = req?.body;
+  const { value,storeId } = req?.body;
 
   const store = await prisma.store.findUnique({
     where: { id: Number(storeId) },

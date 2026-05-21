@@ -5,7 +5,7 @@ import { getAllRatings, getRatingsByStore, rateStore } from '../controllers/rati
 
 const ratingRouter = Router()
 
-ratingRouter.post('/:storeId',authenticate,rateStore)
+ratingRouter.post('/',authenticate,rateStore)
 ratingRouter.get('/',authenticate,authorize("ADMIN","STORE_OWNER"),getAllRatings)
 ratingRouter.get('/:storeId',authenticate,authorize("ADMIN","STORE_OWNER"),getRatingsByStore)
 

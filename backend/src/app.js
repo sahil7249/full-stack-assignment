@@ -7,6 +7,7 @@ import ratingRouter from './routers/rating.router.js'
 import authRouter  from './routers/auth.router.js'
 import cors from 'cors'
 import adminRouter from './routers/admin.router.js'
+import ownerRouter from './routers/owner.router.js'
 
 env.config( { path :'.env'})
 
@@ -22,9 +23,10 @@ app.use(cors({
 }));
 app.use('/api/user',userRouter)
 app.use('/api/stores',storeRouter)
-app.use('/api/rating',ratingRouter)
+app.use('/api/ratings',ratingRouter)
 app.use('/api/auth',authRouter)
 app.use('/api/admin',adminRouter)
+app.use('/api/owner',ownerRouter)
 
 app.use(errorMiddleware)
 
