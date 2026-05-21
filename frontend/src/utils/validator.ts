@@ -35,3 +35,10 @@ export const validateRating = (rating: number): string | null => {
   if (rating < 1 || rating > 5) return "Rating must be between 1 and 5";
   return null;
 };
+
+export const validateStoreName = (value : string) : string | null => {
+  if (value.trim() == "") return "Store name is required";
+  if (value.length < 10) return "Store name must be at least 10 characters";
+  if (value.length > 20) return "Store name must be at most 20 characters";
+  return null
+}

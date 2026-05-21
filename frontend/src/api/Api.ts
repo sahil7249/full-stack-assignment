@@ -31,7 +31,6 @@ const request = async <T>(path: string, options?: RequestInit): Promise<T> => {
   const json = await res.json().catch(() => ({ message: "request failed" }));
 
   if (!res.ok) {
-    // const err = await res.json().catch(() => ({ message: res['message'] ||"Request Failed " }));
     throw new Error(json.message);
   }
 
@@ -88,6 +87,16 @@ export const api = {
       return request<User[]>(`/admin/stores${qs ? `?${qs}` : ''}`);
     },
     createStore : (data: Omit<Store,'id' | 'averageRating' | 'totalRatings'>) => 
-      request<Store>('admin/stores',{ method:'POST',body:JSON.stringify(data) })
-  }
+      request<Store>('/admin/stores',{ method:'POST',body:JSON.stringify(data) })
+  },
+  ratings: {
+    submit: (storeId: string, value: number) =>
+      request<Rating>('/ratings', { method: 'POST', body: JSON.stringify({ storeId, value }) }),
+    update: (ratingId: string, value: number) =>
+      request<Rating>(`/ratings/${ratingId}`, { method: 'PATCH', body: JSON.stringify({ value }) }),
+  },
+  owner: {
+    getDashboard: () =>
+      request<{ store: Store; ratings: (Rating & { user: Pick<User, 'id' | 'name' | 'email'> })[] }>('/owner/dashboard'),
+  },
 };

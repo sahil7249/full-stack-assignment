@@ -10,6 +10,7 @@ import { AdminStoresPage } from "./pages/admin/AdminStoresPage";
 import { useAuth } from "./hooks/useAuth";
 import { AdminAddUserPage } from "./pages/admin/AdminAddUserPage";
 import { AdminUserDetailPage } from "./pages/admin/AdminUserDetailsPage";
+import OwnerDashboard from "./pages/owner/OwnerDashBoard";
 
 const RootRedirect: React.FC = () => {
   const { user } = useAuth();
@@ -42,6 +43,9 @@ const AppRoutes: React.FC = () => (
     } /> 
     <Route path="/admin/users/:id" element={
       <ProtectedRoute allowedRoles={["ADMIN"]}><AdminUserDetailPage /> </ProtectedRoute>
+    } /> 
+    <Route path="/owner/dashboard" element={
+      <ProtectedRoute allowedRoles={["STORE_OWNER"]}><OwnerDashboard /> </ProtectedRoute>
     } /> 
   </Routes>
 );

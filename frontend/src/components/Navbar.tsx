@@ -21,7 +21,7 @@ export const NavBar = ({ userName ,role ,onLogOut,links} : NavbarProps) => {
         <p className="text-sm font-medium text-slate-900">{userName}</p>
         <p className="text-xs text-slate-500 capitalize">{role}</p>
       </div>
-      <Button variant="ghost" size="sm" >Logout</Button>
+      <Button variant="ghost" size="sm" onClick={onLogOut}>Logout</Button>
     </div>
   </nav>
 }

@@ -4,7 +4,7 @@ import type { Store } from "../../types/types";
 import { useCallback, useEffect, useState } from "react";
 import { useSort } from "../../hooks/useSort";
 import { api } from "../../api/Api";
-import { validateEmail, validateName } from "../../utils/validator";
+import { validateAddress, validateEmail, validateName, validateStoreName } from "../../utils/validator";
 import { NavBar } from "../../components/Navbar";
 import {
   Alert,
@@ -60,9 +60,9 @@ export const AdminStoresPage: React.FC = () => {
   }, [load]);
 
   const handleAddStore = async () => {
-    const nameError = validateName(form.name);
+    const nameError = validateStoreName(form.name);
     const emailError = validateEmail(form.email);
-    const addressError = validateName(form.address);
+    const addressError = validateAddress(form.address);
 
     setFormErrors({
       email: emailError ?? "",
@@ -70,8 +70,7 @@ export const AdminStoresPage: React.FC = () => {
       address: addressError ?? "",
     });
 
-    if (Object.keys(formErrors).length) {
-      setFormErrors(formErrors as any);
+    if (emailError || nameError || addressError) {
       return;
     }
     setFormErrors({

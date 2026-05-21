@@ -60,15 +60,26 @@ export const UserStoresPage = () => {
   };
 
   const handleSubmitRating = async () => {
-    if(!ratingModal || ratingModal.pendingValue === 0) {
-        setRatingError("Please select a rating between 1 and 5.")
-        return 
+    if (!ratingModal || ratingModal.pendingValue === 0) {
+      setRatingError('Please select a rating between 1 and 5.');
+      return;
     }
-    setRatingSaving(true)
-    setRatingError('')
-
-    // remaining
-  }
+    setRatingSaving(true);
+    setRatingError('');
+    try {
+      if (ratingModal.store.userRatingId) {
+        await api.ratings.update(ratingModal.store.userRatingId, ratingModal.pendingValue);
+      } else {
+        await api.ratings.submit(ratingModal.store.id, ratingModal.pendingValue);
+      }
+      setRatingModal(null);
+      load();
+    } catch (err: any) {
+      setRatingError(err.message || 'Failed to submit rating.');
+    } finally {
+      setRatingSaving(false);
+    }
+  };
 
   const navLinks = [
     {label : 'Stores',onClick: () => navigate('/stores')},
